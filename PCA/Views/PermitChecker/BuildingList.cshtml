@@ -1,0 +1,140 @@
+﻿@using PermitChecker.Models;
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Your Razor Page</title>
+    <link rel="stylesheet" href="~/css/mystyles.css" asp-append-version="true" />
+    <style>
+
+        #panel {
+            width: 100%;
+            margin: 0 auto;
+            padding: 15px 0 0;
+            background: #fff;
+            border: 1px solid silver;
+            font: 16px calibri;
+            letter-spacing: -1px;
+            -webkit-box-shadow: 0 0 2px silver;
+            -moz-box-shadow: 0 0 2px silver;
+            box-shadow: 0 0 2px silver;
+        }
+
+        label {
+            display: block;
+            width: 260px;
+            padding: 10px 20px;
+            color: #696969;
+            font-size: 16px;
+            text-shadow: 0 0 1px silver;
+        }
+
+
+
+
+
+
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #98c9dc;
+            border: 1px solid #005f85;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: center;
+            width: 100%;
+            text-shadow: 0 0 1px black;
+        }
+
+            .button:hover {
+                background: #98c9dc;
+                border: 1px solid #005f85;
+                color: white;
+                text-decoration: none;
+                border-radius: 5px;
+                cursor: pointer;
+                text-align: center;
+                width: 100%;
+                text-shadow: 0 0 1px black;
+            }
+
+
+
+        #panel {
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="panel">
+        <form>
+
+            <table class="table">
+                <thead>
+                    <tr>
+
+                        <th>Lista Budynków</th>
+
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @model List<Building>
+
+                    @foreach (var building in Model)
+                    {
+                        <tr>
+
+                            <th>@building.Name</th>
+
+                            <th><a href="@Url.Action("DeleteBuilding", "PermitChecker", new { id = building.Id })" class="button">Usuń Budyenk</a></th>
+                            <th><a href="@Url.Action("EditBuilding", "PermitChecker", new { id = building.Id })" class="button">Edytuj Budynek</a></th>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </form>
+    </div>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
