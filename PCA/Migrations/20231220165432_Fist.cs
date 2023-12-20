@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PermitChecker.Migrations
 {
     /// <inheritdoc />
-    public partial class First : Migration
+    public partial class Fist : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,22 +37,32 @@ namespace PermitChecker.Migrations
                     RangeOfHours = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Asist = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BuildingName = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    BuildingID = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Permission", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Permission_Building_BuildingID",
+                        column: x => x.BuildingID,
+                        principalTable: "Building",
+                        principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Permission_BuildingID",
+                table: "Permission",
+                column: "BuildingID");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Building");
+                name: "Permission");
 
             migrationBuilder.DropTable(
-                name: "Permission");
+                name: "Building");
         }
     }
 }

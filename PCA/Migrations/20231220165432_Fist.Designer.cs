@@ -12,8 +12,8 @@ using PCA.Entities;
 namespace PermitChecker.Migrations
 {
     [DbContext(typeof(PermitCheckerDbContext))]
-    [Migration("20231125174341_First")]
-    partial class First
+    [Migration("20231220165432_Fist")]
+    partial class Fist
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,8 +54,8 @@ namespace PermitChecker.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("BuildingName")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("BuildingID")
+                        .HasColumnType("int");
 
                     b.Property<string>("Company")
                         .IsRequired()
@@ -81,7 +81,23 @@ namespace PermitChecker.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BuildingID");
+
                     b.ToTable("Permission");
+                });
+
+            modelBuilder.Entity("PermitChecker.Models.Permission", b =>
+                {
+                    b.HasOne("PermitChecker.Models.Building", "Building")
+                        .WithMany("Permissions")
+                        .HasForeignKey("BuildingID");
+
+                    b.Navigation("Building");
+                });
+
+            modelBuilder.Entity("PermitChecker.Models.Building", b =>
+                {
+                    b.Navigation("Permissions");
                 });
 #pragma warning restore 612, 618
         }
