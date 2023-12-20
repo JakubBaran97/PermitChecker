@@ -12,8 +12,11 @@
 
         public string Asist { get; set; }
 
-        public string? BuildingName { get; set; }
 
-        
+
+        public int? BuildingID { get; set; }
+        public virtual Building Building { get; set; }
+
+
     }
 }

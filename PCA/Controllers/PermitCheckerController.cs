@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PermitChecker.Exceptions;
 using PermitChecker.Models;
 using PermitChecker.Services;
 
@@ -8,15 +9,18 @@ namespace PermitChecker.Controllers
     {
         private readonly IBuildingService _buildingService;
         private readonly IPermissionService _permissionService;
-        public PermitCheckerController(IBuildingService buildingService, IPermissionService permissionService)
+        private readonly IBuildingPermissionViewServices _buildingPermissionViewServices;
+        public PermitCheckerController(IBuildingService buildingService, IPermissionService permissionService, IBuildingPermissionViewServices buildingPermissionViewServices)
         {
             _buildingService = buildingService;
             _permissionService = permissionService;
+            _buildingPermissionViewServices = buildingPermissionViewServices;
         }
         public IActionResult Index()
         {
             return View();
         }
+
 
         public IActionResult AddBuilding()
         {
@@ -65,29 +69,56 @@ namespace PermitChecker.Controllers
 
         public IActionResult AddPermission()
         {
+
             var buildingList = _buildingService.GetBuildings();
             ViewBag.BuildingList = buildingList;
             return View();
+
+
         }
 
         [HttpPost]
         public IActionResult AddPermission(Permission permission)
         {
-            _permissionService.AddPermission(permission);
-            return RedirectToAction("Index");
+            try
+            {
+
+
+                _permissionService.AddPermission(permission);
+                return RedirectToAction("Index");
+            }
+
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
+         
         }
 
 
         public IActionResult PermissionList()
         {
-            var permission = _permissionService.GetPermission();
-            return View(permission);
+            _permissionService.Expiration();
+
+
+
+            var permissions = _permissionService.GetPermission();
+
+            var buildings = _buildingService.GetBuildings();
+
+            var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
+
+            return View(buildingPermissionViewModels);
+
+
         }
 
         public IActionResult DeletePermission(int id)
         {
-            
-           _permissionService.RemovePermission(id);
+
+            _permissionService.RemovePermission(id);
 
             return RedirectToAction("Index");
         }
@@ -109,5 +140,30 @@ namespace PermitChecker.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult TodayPermission()
+        {
+            _permissionService.Expiration();
+
+
+
+            var permissions = _permissionService.IsPermissionValidToday();
+
+            var buildings = _buildingService.GetBuildings();
+
+            var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
+
+            return View(buildingPermissionViewModels);
+        }
+
+        public IActionResult Print()
+        {
+            var permissions = _permissionService.IsPermissionValidToday();
+
+            var buildings = _buildingService.GetBuildings();
+
+            var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
+
+            return View(buildingPermissionViewModels);
+        }
     }
 }

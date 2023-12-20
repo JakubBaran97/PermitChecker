@@ -16,6 +16,7 @@ namespace PCA
             //Services
             builder.Services.AddTransient<IBuildingService, BuildingService>();
             builder.Services.AddTransient <IPermissionService, PermissionService>();
+            builder.Services.AddTransient<IBuildingPermissionViewServices, BuildingPermissionsViewServices>();
 
             var app = builder.Build();
 

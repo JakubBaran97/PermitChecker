@@ -1,14 +1,8 @@
 ﻿namespace PermitChecker.Models
 {
-    public class Building
+    public class BuildingPermissionViewModel
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-
+        public Building Buildings { get; set; }
         public List<Permission> Permissions { get; set; }
-
-
-
-
     }
 }

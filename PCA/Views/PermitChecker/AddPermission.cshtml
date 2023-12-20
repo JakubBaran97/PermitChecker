@@ -109,14 +109,13 @@
                     <option value="Tak">Tak</option>
                     <option value="Nie">Nie</option>
                 </select>
+               
 
-
-                @Html.LabelFor(model => model.BuildingName, "Wybierz Budynek")
-                <select id="building" name="BuildingName">
+                @Html.LabelFor(model => model.BuildingID, "Wybierz Budynek")
+                <select id="building" name="BuildingId">
                     @foreach (var building in ViewBag.BuildingList)
                     {
-                        
-                        <option value="@building.Name">@building.Name</option>
+                        <option value="@building.Id" data-buildingname="@building.Name">@building.Name</option>
                     }
                 </select>
 

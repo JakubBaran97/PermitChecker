@@ -1,0 +1,61 @@
+﻿@using PermitChecker.Models;
+ <script>
+       document.addEventListener("DOMContentLoaded", function () {
+        window.print();
+    });
+    </script>
+    <body>
+    <div>
+        
+
+            <table class="table">
+
+                <tbody>
+
+                    @model List<BuildingPermissionViewModel>
+
+                    @foreach (var item in Model)
+                    {
+                        <tr><td><center><h5> Budynek @item.Buildings.Name</h5></center></td></tr>
+                    <tr>
+
+
+
+                            <td><b>Gdzie</b></td>
+                            <td><b>Wykonawca</b></td>
+                            <td><b>Od Kiedy</b></td>
+                            <td><b>Do Kiedy</b></td>
+                            <td><b>W Jakich Godzinach</b></td>
+                            <td><b>Wykonywane Prace</b></td>
+                            <td><b>Asysta</b></td>
+                            <td></td>
+                            
+
+                        </tr>
+
+
+
+
+
+                        @foreach (var permission in item.Permissions)
+                        {
+                            <tr>
+                                <td>@permission.Place</td>
+                                <td>@permission.Company</td>
+                                <td>@permission.StartDate.ToString("dd-MM-yyyy")</td>
+                                <td>@permission.EndDate.ToString("dd-MM-yyyy")</td>
+                                <td>@permission.RangeOfHours</td>
+                                <td>@permission.Description</td>
+                                <td>@permission.Asist</td>
+
+                            </tr>
+                        }
+
+
+                    }
+
+            </table>
+            
+        
+    </div>
+</body>

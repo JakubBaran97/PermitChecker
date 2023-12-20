@@ -9,7 +9,6 @@ namespace PermitChecker.Services
         public List<Building> GetBuildings();
         public void RemoveBuilding(int id);
         public void EditBuilding(int id, Building editBuilding);
-
         public Building FindBuilding(int id);
     }
     public class BuildingService : IBuildingService
@@ -39,7 +38,7 @@ namespace PermitChecker.Services
 
         }
 
-        public Building FindBuilding(int id) 
+        public Building FindBuilding(int id)
         {
             var building = _dbContext.Building.FirstOrDefault(x => x.Id == id);
 
@@ -49,8 +48,11 @@ namespace PermitChecker.Services
         public void RemoveBuilding(int id)
         {
             var building = _dbContext.Building.FirstOrDefault(x => x.Id == id);
+            var permission = _dbContext.Permission.Where(x => x.BuildingID == id);
 
+            _dbContext.Permission.RemoveRange(permission);
             _dbContext.Building.Remove(building);
+
             _dbContext.SaveChanges();
         }
 
@@ -63,6 +65,12 @@ namespace PermitChecker.Services
             _dbContext.SaveChanges();
 
         }
+
+
+
+
+
+
 
     }
 }

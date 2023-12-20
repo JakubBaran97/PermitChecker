@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PCA.Entities;
 
@@ -11,9 +12,11 @@ using PCA.Entities;
 namespace PermitChecker.Migrations
 {
     [DbContext(typeof(PermitCheckerDbContext))]
-    partial class PermitCheckerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231214204800_First")]
+    partial class First
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
