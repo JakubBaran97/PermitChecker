@@ -14,7 +14,7 @@
 
 
 
-        public int? BuildingID { get; set; }
+        public int BuildingID { get; set; }
         public virtual Building Building { get; set; }
 
 

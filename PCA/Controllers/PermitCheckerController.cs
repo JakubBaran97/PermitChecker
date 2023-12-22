@@ -31,16 +31,34 @@ namespace PermitChecker.Controllers
         [HttpPost]
         public IActionResult AddBuilding(Building building)
         {
-            _buildingService.AddBuilding(building);
+            try
+            {
+                _buildingService.AddBuilding(building);
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
         }
 
         public IActionResult BuildingList()
         {
-            var buildings = _buildingService.GetBuildings();
+            try
+            {
+                var buildings = _buildingService.GetBuildings();
 
-            return View(buildings);
+                return View(buildings);
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
         }
 
 
@@ -48,31 +66,73 @@ namespace PermitChecker.Controllers
 
         public IActionResult DeleteBuilding(int id)
         {
-            _buildingService.RemoveBuilding(id);
+            try
+            {
+                _buildingService.RemoveBuilding(id);
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
 
             return RedirectToAction("Index");
         }
 
         public IActionResult EditBuilding(int id)
         {
-            var building = _buildingService.FindBuilding(id);
-            return View(building);
+            try
+            {
+                var building = _buildingService.FindBuilding(id);
+                return View(building);
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
         }
 
         [HttpPost]
         public IActionResult EditBuilding(int id, Building editBuilding)
         {
-            _buildingService.EditBuilding(id, editBuilding);
+            try
+            {
+                _buildingService.EditBuilding(id, editBuilding);
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
         }
 
         public IActionResult AddPermission()
         {
+            try
+            {
+                var buildingList = _buildingService.GetBuildings();
+                ViewBag.BuildingList = buildingList;
+                return View();
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = "Nie można dodać awizacji jesli nie stworzono budynku!";
+                return View("ErrorView");
+            }
 
-            var buildingList = _buildingService.GetBuildings();
-            ViewBag.BuildingList = buildingList;
-            return View();
 
 
         }
@@ -94,7 +154,8 @@ namespace PermitChecker.Controllers
                 ViewData["ErrorMessage"] = ex.Message;
                 return View("ErrorView");
             }
-         
+           
+
         }
 
 
@@ -102,68 +163,142 @@ namespace PermitChecker.Controllers
         {
             _permissionService.Expiration();
 
+            try
+            {
 
+                var permissions = _permissionService.GetPermission();
 
-            var permissions = _permissionService.GetPermission();
+                var buildings = _buildingService.GetBuildings();
 
-            var buildings = _buildingService.GetBuildings();
+                var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
 
-            var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
-
-            return View(buildingPermissionViewModels);
-
+                return View(buildingPermissionViewModels);
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
 
         }
 
         public IActionResult DeletePermission(int id)
         {
+            try
+            {
+                _permissionService.RemovePermission(id);
 
-            _permissionService.RemovePermission(id);
-
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
         }
 
         public IActionResult EditPermission(int id)
         {
-            var permission = _permissionService.FindPermission(id);
-            var buildingList = _buildingService.GetBuildings();
-            ViewBag.BuildingList = buildingList;
-            return View(permission);
+            try
+            {
+                var permission = _permissionService.FindPermission(id);
+                var buildingList = _buildingService.GetBuildings();
+                ViewBag.BuildingList = buildingList;
+                return View(permission);
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
+           
+
+
+
 
         }
 
         [HttpPost]
         public IActionResult EditPermission(int id, Permission editPermission)
         {
-            _permissionService.EditPermission(id, editPermission);
+            try
+            {
+                _permissionService.EditPermission(id, editPermission);
 
-            return RedirectToAction("Index");
+                return RedirectToAction("Index");
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
         }
 
         public IActionResult TodayPermission()
         {
-            _permissionService.Expiration();
+            try
+            {
+                _permissionService.Expiration();
 
 
 
-            var permissions = _permissionService.IsPermissionValidToday();
+                var permissions = _permissionService.IsPermissionValidToday();
 
-            var buildings = _buildingService.GetBuildings();
+                var buildings = _buildingService.GetBuildings();
 
-            var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
+                var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
 
-            return View(buildingPermissionViewModels);
+                return View(buildingPermissionViewModels);
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
+
         }
 
         public IActionResult Print()
         {
-            var permissions = _permissionService.IsPermissionValidToday();
+            try
+            {
+                var permissions = _permissionService.IsPermissionValidToday();
 
-            var buildings = _buildingService.GetBuildings();
+                var buildings = _buildingService.GetBuildings();
 
-            var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
+                var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
 
-            return View(buildingPermissionViewModels);
+                return View(buildingPermissionViewModels);
+            }
+            catch (NotFoundException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = "Nie ma nic do wydrukowania!";
+                return View("ErrorView");
+            }
+            catch (BadRequestException ex)
+            {
+                ModelState.AddModelError(string.Empty, ex.Message);
+                ViewData["ErrorMessage"] = ex.Message;
+                return View("ErrorView");
+            }
         }
     }
 }

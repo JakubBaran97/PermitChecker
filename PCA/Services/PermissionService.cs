@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using PCA.Entities;
 using PermitChecker.Exceptions;
 using PermitChecker.Models;
@@ -29,39 +30,42 @@ namespace PermitChecker.Services
 
         public void AddPermission(Permission permission)
         {
-            if (permission.StartDate == null 
-                && permission.Place == null
-                && permission.EndDate == null 
-                && permission.Company == null
-                && permission.RangeOfHours == null
-                && permission.Asist == null
-                && permission.Description == null) throw new BadRequestException("Uzupełnij wszystkie pola");
+            if (permission.StartDate == null
+                || permission.Place == null
+                || permission.Company == null
+                || permission.EndDate == null
+                || permission.Company == null
+                || permission.RangeOfHours == null
+                || permission.Asist == null
+                || permission.Description == null) throw new BadRequestException("Uzupełnij wszystkie pola");
 
             if (permission.StartDate > permission.EndDate) throw new BadRequestException("data rozpoczęcia nie może być mniejsza niż data końca");
 
-            var newPermission = new Permission();
+            var newPermission = new Permission()
             {
-                newPermission.Place = permission.Place;
+                Place = permission.Place,
 
-                newPermission.Company = permission.Company;
+                Company = permission.Company,
 
-                newPermission.StartDate = permission.StartDate;
+                StartDate = permission.StartDate,
 
-                newPermission.EndDate = permission.EndDate;
+                EndDate = permission.EndDate,
 
-                newPermission.RangeOfHours = permission.RangeOfHours;
+                RangeOfHours = permission.RangeOfHours,
 
-                newPermission.Description = permission.Description;
+                Description = permission.Description,
 
-                newPermission.Asist = permission.Asist;
+                Asist = permission.Asist,
 
-
-
-                newPermission.BuildingID = permission.BuildingID;
-
+                BuildingID = permission.BuildingID
+            };
 
 
-            }
+
+
+
+
+
 
 
 
@@ -72,28 +76,46 @@ namespace PermitChecker.Services
 
         public List<Permission> GetPermission()
         {
+
             var permission = _dbContext.Permission.ToList();
+            if (permission == null || !permission.Any()) throw new NotFoundException("Nie znaleziono Awizacji!");
+
+
+
 
             return permission;
         }
 
-        public Permission FindPermission(int Id)
+        public Permission FindPermission(int id)
         {
-            var permission = _dbContext.Permission.FirstOrDefault(x => x.Id == Id);
-
+            var permission = _dbContext.Permission.FirstOrDefault(x => x.Id == id);
+            if (permission == null || id == null) throw new NotFoundException("Nie znaleziono Awizacji!");
             return permission;
         }
 
         public void RemovePermission(int id)
         {
             var permission = _dbContext.Permission.FirstOrDefault(x => x.Id == id);
-
+            if (permission == null || id == null) throw new NotFoundException("Nie znaleziono Awizacji!");
             _dbContext.Permission.Remove(permission);
             _dbContext.SaveChanges();
         }
 
         public void EditPermission(int id, Permission editPermission)
         {
+
+            if (editPermission.StartDate == null
+                || editPermission.Place == null
+                || editPermission.Company == null
+                || editPermission.EndDate == null
+                || editPermission.Company == null
+                || editPermission.RangeOfHours == null
+                || editPermission.Asist == null
+                || editPermission.Description == null) throw new BadRequestException("Uzupełnij wszystkie pola");
+
+            if (id == null) throw new NotFoundException("Nie znaleziono Awizacji!");
+
+
             var permission = _dbContext.Permission.FirstOrDefault(x => x.Id == id);
 
             permission.Place = editPermission.Place;
@@ -123,6 +145,7 @@ namespace PermitChecker.Services
             List<Permission> validPermissions = _dbContext.Permission
                 .Where(p => p.StartDate <= today && today <= p.EndDate)
                 .ToList();
+            if (validPermissions == null || !validPermissions.Any()) throw new NotFoundException("Nie ma żadnych awizacji an dziś");
 
             return validPermissions;
         }

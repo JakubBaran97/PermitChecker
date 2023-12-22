@@ -1,5 +1,7 @@
 ﻿using PCA.Entities;
+using PermitChecker.Exceptions;
 using PermitChecker.Models;
+using System.Security;
 
 namespace PermitChecker.Services
 {
@@ -20,6 +22,8 @@ namespace PermitChecker.Services
         }
         public void AddBuilding(Building building)
         {
+            if (building.Name == null) throw new BadRequestException("Podaj nazwę");
+
             var newBuilding = new Building()
             {
                 Name = building.Name
@@ -32,7 +36,10 @@ namespace PermitChecker.Services
 
         public List<Building> GetBuildings()
         {
+            
             var building = _dbContext.Building.ToList();
+
+            if (building == null || !building.Any()) throw new NotFoundException("Nie znaleziono budynku!");
             return building;
 
 
@@ -41,6 +48,8 @@ namespace PermitChecker.Services
         public Building FindBuilding(int id)
         {
             var building = _dbContext.Building.FirstOrDefault(x => x.Id == id);
+            if (building == null || id == null) throw new NotFoundException("Nie znaleziono budynku!");
+
 
             return building;
         }
@@ -50,6 +59,7 @@ namespace PermitChecker.Services
             var building = _dbContext.Building.FirstOrDefault(x => x.Id == id);
             var permission = _dbContext.Permission.Where(x => x.BuildingID == id);
 
+            if (building == null || id == null) throw new NotFoundException("Nie znaleziono budynku");
             _dbContext.Permission.RemoveRange(permission);
             _dbContext.Building.Remove(building);
 
@@ -58,8 +68,9 @@ namespace PermitChecker.Services
 
         public void EditBuilding(int id, Building editBuilding)
         {
+            if (editBuilding.Name == null) throw new BadRequestException("Podaj nazwę");
             var building = _dbContext.Building.FirstOrDefault(x => x.Id == id);
-
+            if (building == null || id == null) throw new NotFoundException("Nie znaleziono budynku!");
             building.Name = editBuilding.Name;
 
             _dbContext.SaveChanges();
