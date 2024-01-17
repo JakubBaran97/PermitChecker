@@ -9,13 +9,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Your Razor Page</title>
     <link rel="stylesheet" href="~/css/mystyles.css" asp-append-version="true" />
+    <script>
 
-   
+        function printDiv() {
+            var printContents = document.getElementById('printableDiv').innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+
+            window.print();
+
+            document.body.innerHTML = originalContents;
+        }
+    </script>
+
 
     <style>
-       
-        
-    
+
+
+
         #panel {
             width: 100%;
             margin: 0 auto;
@@ -81,59 +93,62 @@
 <body>
     <div id="panel">
         <form>
+            <div id="printableDiv">
+                <table class="table">
 
-            <table class="table">
+                    <tbody>
 
-                <tbody>
+                        @model List<BuildingPermissionViewModel>
 
-                    @model List<BuildingPermissionViewModel>
-
-                    @foreach (var item in Model)
-                    {
-                        <tr><td><center><h2> Budynek @item.Buildings.Name</h2></center></td></tr>
-                        <tr style="background-color: #98c9dc;">
-
-
-
-                            <td>Gdzie</td>
-                            <td>Wykonawca</td>
-                            <td>Od Kiedy</td>
-                            <td>Do Kiedy</td>
-                            <td>W Jakich Godzinach</td>
-                            <td>Wykonywane Prace</td>
-                            <td>Asysta</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-
-                        </tr>
-
-
-
-
-
-                        @foreach (var permission in item.Permissions)
+                        @foreach (var item in Model)
                         {
-                            <tr>
-                                <td>@permission.Place</td>
-                                <td>@permission.Company</td>
-                                <td>@permission.StartDate.ToString("dd-MM-yyyy")</td>
-                                <td>@permission.EndDate.ToString("dd-MM-yyyy")</td>
-                                <td>@permission.RangeOfHours</td>
-                                <td>@permission.Description</td>
-                                <td>@permission.Asist</td>
-                                <td><a href="@Url.Action("DeletePermission", "PermitChecker", new { id = permission.Id })" class="button">Usuń Awizacje</a></td>
-                                <td><a href="@Url.Action("EditPermission", "PermitChecker", new { id = permission.Id })" class="button">Edytuj Awizacje</a></td>
+                            <tr><td><center><h2> Budynek @item.Buildings.Name</h2></center></td></tr>
+                            <tr style="background-color: #98c9dc;">
+
+
+
+                                <td><b>Gdzie</b></td>
+                                <td><b>Wykonawca</b></td>
+                                <td><b>Od Kiedy</b></td>
+                                <td><b>Do Kiedy</b></td>
+                                <td><b>W Jakich Godzinach</b></td>
+                                <td><b>Wykonywane Prace</b></td>
+                                <td><b>Asysta</b></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+
                             </tr>
+
+
+
+
+
+                            @foreach (var permission in item.Permissions)
+                            {
+                                <tr>
+                                    <td>@permission.Place</td>
+                                    <td>@permission.Company</td>
+                                    <td>@permission.StartDate.ToString("dd-MM-yyyy")</td>
+                                    <td>@permission.EndDate.ToString("dd-MM-yyyy")</td>
+                                    <td>@permission.RangeOfHours</td>
+                                    <td>@permission.Description</td>
+                                    <td>@permission.Asist</td>
+                                    <td><a href="@Url.Action("DeletePermission", "PermitChecker", new { id = permission.Id })" class="button">Usuń Awizacje</a></td>
+                                    <td><a href="@Url.Action("EditPermission", "PermitChecker", new { id = permission.Id })" class="button">Edytuj Awizacje</a></td>
+                                </tr>
+                            }
+
+
                         }
 
+                </table>
 
-                    }
-
-            </table>
-            <td><a href="@Url.Action("Print", "PermitChecker")" class="button">Print</a></td>
+                <td><button onclick="printDiv()" class="button">Print</button></td>
+            </div>
         </form>
     </div>
+
 </body>
 </html>
 

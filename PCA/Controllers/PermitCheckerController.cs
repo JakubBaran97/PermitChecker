@@ -275,30 +275,6 @@ namespace PermitChecker.Controllers
 
         }
 
-        public IActionResult Print()
-        {
-            try
-            {
-                var permissions = _permissionService.IsPermissionValidToday();
-
-                var buildings = _buildingService.GetBuildings();
-
-                var buildingPermissionViewModels = _buildingPermissionViewServices.TodayPerm(permissions, buildings);
-
-                return View(buildingPermissionViewModels);
-            }
-            catch (NotFoundException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                ViewData["ErrorMessage"] = "Nie ma nic do wydrukowania!";
-                return View("ErrorView");
-            }
-            catch (BadRequestException ex)
-            {
-                ModelState.AddModelError(string.Empty, ex.Message);
-                ViewData["ErrorMessage"] = ex.Message;
-                return View("ErrorView");
-            }
-        }
+        
     }
 }
