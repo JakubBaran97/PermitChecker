@@ -114,9 +114,8 @@
                                 <td><b>W Jakich Godzinach</b></td>
                                 <td><b>Wykonywane Prace</b></td>
                                 <td><b>Asysta</b></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                               
+                                
 
                             </tr>
 
@@ -134,8 +133,7 @@
                                     <td>@permission.RangeOfHours</td>
                                     <td>@permission.Description</td>
                                     <td>@permission.Asist</td>
-                                    <td><a href="@Url.Action("DeletePermission", "PermitChecker", new { id = permission.Id })" class="button">Usuń Awizacje</a></td>
-                                    <td><a href="@Url.Action("EditPermission", "PermitChecker", new { id = permission.Id })" class="button">Edytuj Awizacje</a></td>
+
                                 </tr>
                             }
 
@@ -144,7 +142,7 @@
 
                 </table>
 
-                <td><button onclick="printDiv()" class="button">Print</button></td>
+                <td><button onclick="printDiv()" class="button">Drukuj</button></td>
             </div>
         </form>
     </div>

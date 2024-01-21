@@ -16,12 +16,12 @@ namespace PermitChecker.Controllers
             _permissionService = permissionService;
             _buildingPermissionViewServices = buildingPermissionViewServices;
         }
+        //Index
         public IActionResult Index()
         {
             return View();
         }
-
-
+        //Building
         public IActionResult AddBuilding()
         {
 
@@ -60,10 +60,6 @@ namespace PermitChecker.Controllers
                 return View("ErrorView");
             }
         }
-
-
-
-
         public IActionResult DeleteBuilding(int id)
         {
             try
@@ -117,7 +113,12 @@ namespace PermitChecker.Controllers
                 return View("ErrorView");
             }
         }
+        public IActionResult BuildingOption()
+        {
+            return View();
+        }
 
+        //Permission
         public IActionResult AddPermission()
         {
             try
@@ -158,7 +159,6 @@ namespace PermitChecker.Controllers
 
         }
 
-
         public IActionResult PermissionList()
         {
             _permissionService.Expiration();
@@ -182,7 +182,6 @@ namespace PermitChecker.Controllers
             }
 
         }
-
         public IActionResult DeletePermission(int id)
         {
             try
